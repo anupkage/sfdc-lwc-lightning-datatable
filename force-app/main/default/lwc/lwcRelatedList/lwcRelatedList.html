@@ -122,5 +122,8 @@
             >
             </lightning-button>
         </footer>
+        <template for:each={visibleNumberList} for:item="pageNumber">
+            <div key={pageNumber}>{pageNumber}</div>
+        </template>
     </lightning-card>
 </template>

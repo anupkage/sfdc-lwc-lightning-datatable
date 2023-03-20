@@ -29,35 +29,35 @@ export default class LightningDatatable extends NavigationMixin(
     LightningElement
 ) {
     // Public Property
-    @api recordId;
-    @api iconName;
-    @api title;
-    @api objectName;
-    @api fields;
-    @api relatedFieldAPI;
-    @api whereClause;
-    @api limit;
-    @api isCounterDisplayed;
     @api actionButtons; //buttons for the list
+    @api fields;
+    @api hasPagination;
+    @api hasSearchBar;
+    @api iconName;
+    @api isCounterDisplayed;
+    @api limit;
+    @api objectName;
+    @api predefinedCol = '';
+    @api recordId;
+    @api relatedFieldAPI;
     @api showCheckboxes;
     @api showViewAll;
-    @api hasPagination;
-    @api predefinedCol = '';
-    @api hasSearchBar;
+    @api title;
+    @api whereClause;
     // Private Property
+    @track colsJson;
+    @track columns;
     @track data;
-    @track soql;
-    @track offSet = 0;
-    @track totalRows = 0;
     @track error;
-    @track selectedRows;
     @track initialLimit;
+    @track offSet = 0;
+    @track searchTerm;
+    @track selectedRows;
     @track showCollapse = false;
+    @track soql;
     @track sortBy;
     @track sortDirection = 'asc';
-    @track columns;
-    @track colsJson;
-    @track searchTerm;
+    @track totalRows = 0;
     draftValues = [];
     labels = {
         recordUpdatedSuccessMessage,
@@ -213,7 +213,32 @@ export default class LightningDatatable extends NavigationMixin(
         this.buildSOQL();
         this.fetchRecords();
     }
-
+    pageNumberList = [];
+    maxPageNumbersVisible = 7;
+    /**
+     * It calculates which page numbers are to be displayed on the UI.
+     */
+    get visibleNumberList() {
+        let totalPages = this.totalRows / this.limit;
+        for (let index = 1; index <= totalPages; index++) {
+            this.pageNumberList.push(index);
+        }
+        let viewPages;
+        let mid = Math.floor(this.setSize / 2) + 1;
+        if (this.offSet > mid) {
+            let start = this.offSet - mid;
+            let end = this.offSet + mid - 1;
+            if (end > this.pageNumberList.length) {
+                start -= end - this.pageNumberList.length;
+            }
+            viewPages = this.pages.slice(start, end);
+            if (!viewPages.includes(this.pageNumberList.length)) {
+                viewPages = viewPages.slice(0, -2);
+                viewPages.push('...', this.pageNumberList.length);
+            }
+        }
+        return viewPages;
+    }
     get isDisablePrev() {
         return this.offSet === 0 || (this.totalRows === 0) | this.searchTerm
             ? true
@@ -420,4 +445,5 @@ export default class LightningDatatable extends NavigationMixin(
                 });
         }
     }
+    // get totalPage
 }

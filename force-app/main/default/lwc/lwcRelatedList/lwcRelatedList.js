@@ -223,20 +223,35 @@ export default class LightningDatatable extends NavigationMixin(
         for (let index = 1; index <= totalPages; index++) {
             this.pageNumberList.push(index);
         }
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.pageNumberList);
         let viewPages;
-        let mid = Math.floor(this.setSize / 2) + 1;
+        let mid = Math.floor(this.maxPageNumbersVisible / 2) + 1;
         if (this.offSet > mid) {
             let start = this.offSet - mid;
             let end = this.offSet + mid - 1;
+            console.log('>>>>>>>>>>>>>>>end>>>>>>>>>>>>>', end);
             if (end > this.pageNumberList.length) {
                 start -= end - this.pageNumberList.length;
             }
-            viewPages = this.pages.slice(start, end);
+            viewPages = this.pageNumberList.slice(start, end);
             if (!viewPages.includes(this.pageNumberList.length)) {
                 viewPages = viewPages.slice(0, -2);
                 viewPages.push('...', this.pageNumberList.length);
             }
+        } else {
+            viewPages = this.pageNumberList.slice(
+                0,
+                this.maxPageNumbersVisible
+            );
+            if (
+                !viewPages.includes(this.pageNumberList.length) &&
+                this.pageNumberList.length > this.maxPageNumbersVisible
+            ) {
+                viewPages = viewPages.slice(0, -2);
+                viewPages.push('...', this.pageNumberList.length);
+            }
         }
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', viewPages);
         return viewPages;
     }
     get isDisablePrev() {

@@ -86,6 +86,16 @@
                 onclick={previous}
                 class="slds-m-left_xx-small"
             ></lightning-button>
+            <template for:each={visibleNumberList} for:item="pageNumber">
+                <!-- <div key={pageNumber}>{pageNumber}</div> -->
+                <lightning-button
+                    key={pageNumber}
+                    variant="brand"
+                    label={pageNumber}
+                    title={pageNumber}
+                    class="slds-m-left_xx-small"
+                ></lightning-button>
+            </template>
             <lightning-button
                 variant="brand"
                 disabled={isDisableNext}
@@ -122,8 +132,5 @@
             >
             </lightning-button>
         </footer>
-        <template for:each={visibleNumberList} for:item="pageNumber">
-            <div key={pageNumber}>{pageNumber}</div>
-        </template>
     </lightning-card>
 </template>
